@@ -209,5 +209,26 @@ public async Task<ActionResult<IEnumerable<TaskItem>>> GetOverdue() {
 
     return Ok(overdue);
 }
+//1
+[HttpPatch("complete-all")]
+public async Task<ActionResult> CompleteAll()
+{
+    var count = await _db.Tasks
+        .Where(t => !t.IsCompleted)
+        .ExecuteUpdateAsync(s => s.SetProperty(t => t.IsCompleted, true));
+
+    return Ok(new { Updated = count });
+}
+
+//2
+[HttpDelete("completed")]
+public async Task<ActionResult> DeleteCompleted()
+{
+    var count = await _db.Tasks
+        .Where(t => t.IsCompleted)
+        .ExecuteDeleteAsync();
+
+    return Ok(new { Deleted = count });
+}
 
 }
